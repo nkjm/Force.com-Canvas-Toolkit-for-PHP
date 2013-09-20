@@ -4,7 +4,7 @@ class SignedRequest {
     public $consumer_secret;
 
     // context of signed request will be set when set_context is called
-    public $envelope;
+    public $canvas_request;
 
     public function __construct($consumer_secret){
         $this->consumer_secret = $consumer_secret;
@@ -64,8 +64,7 @@ class SignedRequest {
      * function to set context of signed request to property
      */
     public function set_context(){
-        $envelope = json_decode($this->get_context_in_json());
-        $this->envelope = $envelope;
+        $this->canvas_request = json_decode($this->get_context_in_json());
     }
 }
 ?>

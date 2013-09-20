@@ -21,6 +21,6 @@ Sample Code
     $sr->set_context();
     
     // For example, you can access oauthToken and instanceUrl as follows.
-    echo $sr->envelope->client->oauthToken;
-    echo $sr->envelope->client->instanceUrl;
+    echo $sr->canvas_request->client->oauthToken;
+    echo $sr->canvas_request->client->instanceUrl;
     ?>
