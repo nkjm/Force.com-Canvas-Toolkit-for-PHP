@@ -17,8 +17,8 @@ Sample Code
         trigger_error("Validation Failed.", E_USER_ERROR);
     }
     
-    // By executing set_context method, all the context in signed request are assigned to $sr->evnvelope property.
-    $sr->set_context();
+    // By executing set_canvas_request method, canvas request are assigned to $sr->canvas_request property.
+    $sr->set_canvas_request();
     
     // For example, you can access oauthToken and instanceUrl as follows.
     echo $sr->canvas_request->client->oauthToken;

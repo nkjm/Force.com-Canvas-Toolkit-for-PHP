@@ -54,17 +54,17 @@ class SignedRequest {
         }
     }
 
-    public function get_context_in_json(){
+    public function get_canvas_request_in_json(){
         $sr_r = $this->extract_signed_request();
         return base64_decode($sr_r[1]);
     }
 
 
     /*
-     * function to set context of signed request to property
+     * function to set canvas request to property
      */
-    public function set_context(){
-        $this->canvas_request = json_decode($this->get_context_in_json());
+    public function set_canvas_request(){
+        $this->canvas_request = json_decode($this->get_canvas_request_in_json());
     }
 }
 ?>
