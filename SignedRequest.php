@@ -42,7 +42,7 @@ class SignedRequest {
      */
     public function validate_signed_request(){
         // bypass validation if canvas request has already been set to session 
-        if ($_SESSION["canvas_request"]){
+        if (array_key_exists("canvas_request", $_SESSION) && !empty($_SESSION["canvas_request"])){
             $this->canvas_request = $_SESSION["canvas_request"];
             return true;
 	}
