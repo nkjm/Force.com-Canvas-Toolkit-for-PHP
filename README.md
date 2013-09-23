@@ -12,10 +12,10 @@ Sample Code
 ------------------------------------------------------------------------------------------------------
     <?php
     /* Import toolkit */
-    // Hosted on other than heroku
+    // If you php code is hosted on other than heroku
     require_once "SignedRequest.php";
 
-    // Hosted on heroku (Make sure you have copied MemcacheSASL.php to your workspace as well.)
+    // If you php code is hosted on heroku. *Make sure you have copied MemcacheSASL.php to your workspace as well.
     require_once "SignedRequestForHeroku.php";
     
 
