@@ -7,17 +7,24 @@ class SignedRequest {
     public $canvas_request;
 
     public function __construct($consumer_secret){
+        ini_set('session.use_cookies', false);
+        ini_set('session.use_trans_sid', true);
+        ini_set('session.use_only_cookies', false);
+
+        // start session
+	if (!session_start()){
+            trigger_error("Session is not available.", E_USER_ERROR);
+	}
+
         $this->consumer_secret = $consumer_secret;
     }
 
     private function extract_signed_request(){
         if (empty($_POST)){
             trigger_error("Signed Request is not set", E_USER_ERROR);
-            return false;
         }
         if (!array_key_exists("signed_request", $_POST)){
             trigger_error("Signed Request is not set", E_USER_ERROR);
-            return false;
         }
 
         // split signed request with "."
@@ -25,7 +32,6 @@ class SignedRequest {
 
         if (count($sr_r) != 2){
             trigger_error("Signed Request is invalid format.", E_USER_ERROR);
-            return false;
         }
         return($sr_r);
     }
@@ -35,12 +41,17 @@ class SignedRequest {
      * function to validate signed request
      */
     public function validate_signed_request(){
+        // bypass validation if canvas request has already been set to session 
+        if ($_SESSION["canvas_request"]){
+            $this->canvas_request = $_SESSION["canvas_request"];
+            return true;
+	}
+
         // recieve signed request from POST
         $sr_r = $this->extract_signed_request();
 
         if (empty($this->consumer_secret)){
             trigger_error("CONSUMER SECRET is not set.", E_USER_ERROR);
-            return false;
         }
 
         // calculate signed encoded context
@@ -48,6 +59,8 @@ class SignedRequest {
 
         // validate signed encoded context
         if ($sr_r[0] == $calculated_value){
+            $_SESSION["canvas_request"] = json_decode(base64_decode($sr_r[1]));
+            $this->canvas_request = $_SESSION["canvas_request"];
             return true;
         } else {
             return false;
@@ -55,16 +68,7 @@ class SignedRequest {
     }
 
     public function get_canvas_request_in_json(){
-        $sr_r = $this->extract_signed_request();
-        return base64_decode($sr_r[1]);
-    }
-
-
-    /*
-     * function to set canvas request to property
-     */
-    public function set_canvas_request(){
-        $this->canvas_request = json_decode($this->get_canvas_request_in_json());
+        return json_encode($this->canvas_request);
     }
 }
 ?>
