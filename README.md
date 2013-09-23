@@ -24,6 +24,7 @@ Sample Code
 
     /*
     Initialte instance of SignedRequest class assigning consumer secret of the connected app.
+    You need to set your Consumer Secret to CONSUMER_SECRET.
     */
     $sr = new SignedRequest(CONSUMER_SECRET);
     
