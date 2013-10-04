@@ -11,4 +11,4 @@ Prerequisits
 
 Sample Code
 ------------------------------------------------------------------------------------------------------
-    Please check out index.php for Sample Code.
+Please check out index.php for Sample Code.
