@@ -1,38 +1,22 @@
 <?php
-require_once "MemcacheSASL.php";
-
 class SignedRequest {
-    // consumer secret of the connected app
     public $consumer_secret;
     public $memcache;
-
-    // context of signed request will be set when set_context is called
     public $canvas_request;
 
-    public function __construct($consumer_secret){
-        ini_set('session.use_cookies', false);
-        ini_set('session.use_trans_sid', true);
-        ini_set('session.use_only_cookies', false);
-
-        // start session
-	if (!session_start()){
-            trigger_error("Session is not available.", E_USER_ERROR);
-	}
-
+    public function __construct($consumer_secret, $memcache){
         $this->consumer_secret = $consumer_secret;
-
-        // initiate memcache
-        $this->memcache = new MemcacheSASL;
-        $this->memcache->addServer($_ENV["MEMCACHIER_SERVERS"], '11211');
-        $this->memcache->setSaslAuthData($_ENV["MEMCACHIER_USERNAME"], $_ENV["MEMCACHIER_PASSWORD"]);
+        $this->memcache = $memcache;
     }
 
     private function extract_signed_request(){
         if (empty($_POST)){
-            trigger_error("Signed Request is not set", E_USER_ERROR);
+            trigger_error("Signed Request is not set", E_USER_NOTICE);
+            return false;
         }
         if (!array_key_exists("signed_request", $_POST)){
-            trigger_error("Signed Request is not set", E_USER_ERROR);
+            trigger_error("Signed Request is not set", E_USER_NOTICE);
+            return false;
         }
 
         // split signed request with "."
@@ -50,8 +34,8 @@ class SignedRequest {
      */
     public function validate_signed_request(){
         // bypass validation if canvas request has already been set to memcache
-        if ($this->memcache->get(session_id())){
-            $this->canvas_request = json_decode($this->memcache->get(session_id()));
+        if ($this->memcache->get('canvas_request')){
+            $this->canvas_request = json_decode($this->memcache->get('canvas_request'));
             return true;
         }
 
@@ -67,7 +51,7 @@ class SignedRequest {
 
         // validate signed encoded context
         if ($sr_r[0] == $calculated_value){
-            $this->memcache->add(session_id(), base64_decode($sr_r[1]));
+            $this->memcache->add('canvas_request', base64_decode($sr_r[1]));
             $this->canvas_request = json_decode(base64_decode($sr_r[1]));
             return true;
         } else {

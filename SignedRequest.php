@@ -1,9 +1,6 @@
 <?php
 class SignedRequest {
-    // consumer secret of the connected app
     public $consumer_secret;
-
-    // context of signed request will be set when set_context is called
     public $canvas_request;
 
     public function __construct($consumer_secret){
@@ -42,7 +39,7 @@ class SignedRequest {
      */
     public function validate_signed_request(){
         // bypass validation if canvas request has already been set to session 
-        if (array_key_exists("canvas_request", $_SESSION) && !empty($_SESSION["canvas_request"])){
+        if (isset($_SESSION["canvas_request"]) && !is_null($_SESSION["canvas_request"])){
             $this->canvas_request = $_SESSION["canvas_request"];
             return true;
 	}
